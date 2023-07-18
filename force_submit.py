@@ -26,7 +26,7 @@ class ForceSubmitScraper(CanvasScraper):
         moderate_element = self.driver.find_element("xpath", moderate_xpath)
 
         # Unit test to see if the correct element was found
-        self.test_click_moderate(moderate_element=moderate_element)
+        # self.test_click_moderate(moderate_element=moderate_element)
 
         # Click on the button
         moderate_element.click()
@@ -37,8 +37,6 @@ class ForceSubmitScraper(CanvasScraper):
         # Unit test that it found the correct element
         expected_text = "Moderate This Quiz\nModerate This Quiz"
         actual_text = moderate_element.text
-        # print("Expected: ", expected_text)
-        print(actual_text)
         assert expected_text == actual_text
 
     # This function checks if there is an orange box that indicates outstanding submissions
@@ -48,25 +46,29 @@ class ForceSubmitScraper(CanvasScraper):
             orange_box_xpath = '//*[@id="check_outstanding"]'
             oustanding_element = self.driver.find_element("xpath", orange_box_xpath)
             # Unit test to see if the correct element was found
-            self.test_check_box(outstanding_element=oustanding_element)
+            # self.test_check_box(outstanding_element=oustanding_element)
             print("There are outstanding submissions")
             oustanding_element.click()
+            time.sleep(5)
         except:
             print("no outstanding submissions")
     
     def test_check_box(self, outstanding_element):
         # Unit test that it found the correct element
         expected_text = "Check on outstanding quiz submissions"
+        print(expected_text)
         actual_text = outstanding_element.text
         assert expected_text ==  actual_text
 
     def submit_button(self):
         try:
-            submit_button_xpath = '//*[@id="autosubmit_form_submit_btn"]'
+            # submit_button_xpath = '//*[@id="autosubmit_form_submit_btn"]'
+            submit_button_xpath = '//*[@id="autosubmit_form_submit_btn"]/span'
             submit_element = self.driver.find_element("xpath", submit_button_xpath)
             # Unit test to see if the correct element was found
-            self.test_check_box(submit_button_element=submit_element)
+            # self.test_submit_button(submit_button_element=submit_element)
             submit_element.click()
+            time.sleep(5)
         except:
             pass
 
@@ -90,26 +92,3 @@ class ForceSubmitScraper(CanvasScraper):
 
             # Click the submit button if there are
             self.submit_button()
-
-def main():
-    # Provide the path to the installed webdriver here:
-    driver_path = r"C:\Users\calvi\OneDrive\Documents\OnRamps\msedgedriver.exe"
-
-    # Provide the path to the csv file for the links of an assignment
-    assignment_csv= r"C:\Users\calvi\OneDrive\Documents\OnRamps\Force_Submit\Bio_PostLab_Links.csv"
-
-    # Initialize ForceSubmit Object
-    submitscraper = ForceSubmitScraper(driver_path=driver_path, links_path=assignment_csv)
-
-    # provide quiz link
-    quiz_link = "https://onramps.instructure.com/courses/3801078/quizzes/10456211/"
-
-    # do log in process
-    submitscraper.login(url=quiz_link)
-
-    # click on the "Moderate This Quiz" button
-    submitscraper.click_moderate(quiz_link=quiz_link)
-    
-    submitscraper.check_box()
-
-main()

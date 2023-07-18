@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
-# from force_submit import ForceSubmitScraper
+from force_submit import ForceSubmitScraper
+
 
 class ForceSubmitGUI:
     def __init__(self):
@@ -62,17 +63,11 @@ class ForceSubmitGUI:
         filepath = filedialog.askopenfilename()
         self.csv_path.set(filepath)
 
-    def browse_download(self):
-        filepath = filedialog.askdirectory()
-        self.download_path.set(filepath)
-
     def start_scraper(self):
         driver_path = self.webdriver_path.get()
-        download_path = self.download_path.get()
         postlab_links_dir = self.csv_path.get()
-        lab_num = self.selected_lab.get()
+
         scraper = ForceSubmitScraper(driver_path=driver_path, links_path=postlab_links_dir)
         scraper.force_submit()
-        # canvas_scraper(driver_path, download_path, postlab_links_dir, lab_num)
 
 ForceSubmitGUI()

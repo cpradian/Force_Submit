@@ -1,73 +1,56 @@
-import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout, QLabel, QLineEdit, QFileDialog
 from force_submit import ForceSubmitScraper
 
-
-class ForceSubmitGUI:
+class ForceSubmitGUI(QWidget):
     def __init__(self):
-        self.window = tk.Tk()
-        self.window.title("Force Submit Scraper")
-        self.window.geometry("525x150")
+        super().__init__()
 
-        # set the background color of the window
-        self.window.configure(bg="black")
+        self.layout = QGridLayout()
 
-        # center the window
-        self.window.eval('tk::PlaceWindow %s center' % self.window.winfo_toplevel())
+        self.webdriver_label = QLabel("Webdriver Path:")
+        self.layout.addWidget(self.webdriver_label, 0, 0)
 
-        # style the widgets to look more modern
-        style = ttk.Style()
-        style.configure('TLabel', font=('Helvetica Neue', 10), background="black", foreground="white")
-        style.configure('TButton', font=('Helvetica Neue', 10), padding=1, background="black")
-        style.configure('TEntry', font=('Helvetica Neue', 10), background="gray", foreground="black")
-        style.configure('TCombobox', font=('Helvetica Neue', 10), padding=4, background="white", foreground="black")
+        self.webdriver_path = QLineEdit()
+        self.webdriver_path.setFixedWidth(300)  # Set width
+        self.layout.addWidget(self.webdriver_path, 0, 1)
 
-        # webdriver path
-        webdriver_label = ttk.Label(self.window, text="Webdriver Path:")
-        webdriver_label.grid(column=0, row=0, padx=5, pady=5)
+        self.webdriver_browse_button = QPushButton("Browse")
+        self.webdriver_browse_button.clicked.connect(self.browse_webdriver)
+        self.layout.addWidget(self.webdriver_browse_button, 0, 2)
 
-        self.webdriver_path = tk.StringVar()
-        webdriver_entry = ttk.Entry(self.window, width=40, textvariable=self.webdriver_path)
-        webdriver_entry.grid(column=1, row=0, padx=5, pady=5)
+        self.csv_label = QLabel("Links CSV File Path:")
+        self.layout.addWidget(self.csv_label, 1, 0)
 
-        webdriver_browse_button = ttk.Button(self.window, text="Browse", command=self.browse_webdriver)
-        webdriver_browse_button.grid(column=2, row=0, padx=5, pady=5)
+        self.csv_path = QLineEdit()
+        self.csv_path.setFixedWidth(300)  # Set width
+        self.layout.addWidget(self.csv_path, 1, 1)
 
-        # csv file path
-        csv_label = ttk.Label(self.window, text="Links CSV File Path:")
-        csv_label.grid(column=0, row=1, padx=5, pady=5)
+        self.csv_browse_button = QPushButton("Browse")
+        self.csv_browse_button.clicked.connect(self.browse_csv)
+        self.layout.addWidget(self.csv_browse_button, 1, 2)
 
-        self.csv_path = tk.StringVar()
-        csv_entry = ttk.Entry(self.window, width=40, textvariable=self.csv_path)
-        csv_entry.grid(column=1, row=1, padx=5, pady=5)
+        self.start_button = QPushButton("Start")
+        self.start_button.clicked.connect(self.start_scraper)
+        self.layout.addWidget(self.start_button, 2, 1)
 
-        csv_browse_button = ttk.Button(self.window, text="Browse", command=self.browse_csv)
-        csv_browse_button.grid(column=2, row=1, padx=5, pady=5)
-
-        # start button
-        start_button = ttk.Button(self.window, text="Start", command=self.start_scraper)
-        start_button.grid(column=1, row=4, padx=5, pady=5)
-
-        # center the widgets in the window
-        for child in self.window.winfo_children():
-            child.grid_configure(padx=10, pady=5)
-
-        self.window.mainloop()
+        self.setLayout(self.layout)
 
     def browse_webdriver(self):
-        filepath = filedialog.askopenfilename()
-        self.webdriver_path.set(filepath)
+        filepath, _ = QFileDialog.getOpenFileName()
+        self.webdriver_path.setText(filepath)
 
     def browse_csv(self):
-        filepath = filedialog.askopenfilename()
-        self.csv_path.set(filepath)
+        filepath, _ = QFileDialog.getOpenFileName()
+        self.csv_path.setText(filepath)
 
     def start_scraper(self):
-        driver_path = self.webdriver_path.get()
-        postlab_links_dir = self.csv_path.get()
+        driver_path = self.webdriver_path.text()
+        postlab_links_dir = self.csv_path.text()
 
         scraper = ForceSubmitScraper(driver_path=driver_path, links_path=postlab_links_dir)
         scraper.force_submit()
 
-ForceSubmitGUI()
+app = QApplication([])
+window = ForceSubmitGUI()
+window.show()
+app.exec_()

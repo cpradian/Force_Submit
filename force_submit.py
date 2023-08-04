@@ -15,7 +15,6 @@ class ForceSubmitScraper(CanvasScraper):
     def __init__(self, driver_path, links_path):
         super().__init__(driver_path=driver_path)
         self.assignment_df = pd.read_csv(links_path)
-        self.instructors = self.assignment_df["Instructor"]
         self.links = self.assignment_df["Canvas Link"]
         # Hashset filled with unique urls that have been looped through
         self.url_set = set()
